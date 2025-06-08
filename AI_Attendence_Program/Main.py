@@ -46,7 +46,7 @@ def attendance(name):
 
 cap = cv2.VideoCapture(0)
 
-#check if Video camera is opened
+#check if Video camera is accessed or not
 if not cap.isOpened():
     print("Error: Could not access the webcam")
 else:
