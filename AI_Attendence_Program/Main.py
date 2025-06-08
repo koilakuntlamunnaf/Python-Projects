@@ -46,31 +46,35 @@ def attendance(name):
 
 cap = cv2.VideoCapture(0)
 
-while True:
-    ret, frame = cap.read()
-    faces = cv2.resize(frame, (0, 0), None, 0.25, 0.25)
-    faces = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+#check if Video camera is accessed or not
+if not cap.isOpened():
+    print("Error: Could not access the webcam")
+else:
+    while True:
+        ret, frame = cap.read()
+        faces = cv2.resize(frame, (0, 0), None, 0.25, 0.25)
+        faces = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-    faces_currentframe = face_recognition.face_locations(faces)
-    encode_currentframe = face_recognition.face_encodings(faces, faces_currentframe)
+        faces_currentframe = face_recognition.face_locations(faces)
+        encode_currentframe = face_recognition.face_encodings(faces, faces_currentframe)
 
-    for encodeFace, faceLoc in zip(encode_currentframe, faces_currentframe):
-        matches = face_recognition.compare_faces(encode_list_Known, encodeFace)
-        faceDistance = face_recognition.face_distance(encode_list_Known, encodeFace)
+        for encodeFace, faceLoc in zip(encode_currentframe, faces_currentframe):
+            matches = face_recognition.compare_faces(encode_list_Known, encodeFace)
+            faceDistance = face_recognition.face_distance(encode_list_Known, encodeFace)
 
-        matchIndex = np.argmin(faceDistance)
+            matchIndex = np.argmin(faceDistance)
 
-        if matches[matchIndex]:
-            name = PersonName[matchIndex].upper()
-            y1, x2, y2, x1 = faceLoc
-            #y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
-            cv2.rectangle(frame, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
-            cv2.putText(frame, name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
-            attendance(name)
+            if matches[matchIndex]:
+                name = PersonName[matchIndex].upper()
+                y1, x2, y2, x1 = faceLoc
+                #y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                cv2.rectangle(frame, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
+                cv2.putText(frame, name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
+                attendance(name)
 
-    cv2.imshow("camera", frame)
-    if cv2.waitKey(10) == 13:
-        break
+        cv2.imshow("camera", frame)
+        if cv2.waitKey(10) == 13:
+            break
 cap.release()
 cv2.destroyAllWindows()
