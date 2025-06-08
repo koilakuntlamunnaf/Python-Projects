@@ -116,9 +116,12 @@ def main():
                 print("Tie game")
 
             else:
-                insertLetter("O", move)
-                print(f"Computer place O on position {move}")
-                printBoard(board)
+                if move == 0 or move is None:
+                    print("Tie game")
+                else:
+                    insertLetter("O", move)
+                    print(f"Computer place O on position {move}")
+                    printBoard(board)
 
         else:
             print("You win! ")
